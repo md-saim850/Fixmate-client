@@ -2,10 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { color-scheme: light; }
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { background: #fff; color: #17231b; }
-button, input, textarea, select { font: inherit; }
-.container-shell { width: min(1180px, calc(100% - 40px)); margin-inline: auto; }
-.section-space { padding-block: 76px; }
+:root {
+  color-scheme: light;
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background: #fff;
+  color: #17231b;
+}
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+.container-shell {
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
+}
+.section-space {
+  padding-block: 76px;
+}
