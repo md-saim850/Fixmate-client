@@ -1,5 +1,5 @@
 
-import PaymentTable from "@/components/dashboard/PaymentTable";
+import PaymentTable from "@/components/dashboard/customer/PaymentTable";
 import { CreditCard } from "lucide-react";
 
 export default function CustomerPaymentsPage() {

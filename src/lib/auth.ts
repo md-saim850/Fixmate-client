@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import { jwt } from "better-auth/plugins";
 
 const client = new MongoClient(process.env.MONGODB_URI!);
 const db = client.db("fixmatedb");
@@ -19,17 +20,21 @@ export const auth = betterAuth({
     autoSignIn:false,
   },
 
+  plugins: [jwt()],
+
   user: {
     additionalFields: {
       role: {
         type: "string",
-        required: false,
+        required: true,
         defaultValue: "customer",
         input: true,
       },
-      phone: { type: "string", required: false, input: true },
-      area: { type: "string", required: false, input: true },
+      phone: { type: "string", required: true, input: true },
+      area: { type: "string", required: true, input: true },
       bio: { type: "string", required: false, input: true },
+      photoURL: { type: "string", required: false, input: true },
+
     },
   },
 });

@@ -2,19 +2,7 @@ import Link from "next/link";
 import { MapPin, Clock3, ArrowUpRight } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import Image from "next/image";
-
-export type Service = {
-  _id: string;
-  title: string;
-  category: string;
-  description?: string;
-  image?: string;
-  basePrice: number;
-  estimatedDuration?: string;
-  serviceMode: string;
-  serviceArea: string;
-  technicianName: string;
-};
+import { Service } from "@/types/service";
 
 export function ServiceCard({ service }: { service: Service }) {
   return (
@@ -24,7 +12,7 @@ export function ServiceCard({ service }: { service: Service }) {
         {service.image ? (
           <Image
             fill
-            src={service.image}
+            src={service.image[0]}
             alt={service.title}
             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
           />
@@ -53,7 +41,7 @@ export function ServiceCard({ service }: { service: Service }) {
         <div className="mt-3 grid gap-2 text-xs text-slate-500">
           <span className="flex items-center gap-2">
             <MapPin size={14} />
-            {service.serviceArea}
+            {service.serviceMode}
           </span>
 
           <span className="flex items-center gap-2">
@@ -67,7 +55,7 @@ export function ServiceCard({ service }: { service: Service }) {
         <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-4 mt-5">
           <span className="text-xs text-slate-500">
             By{" "}
-            <strong className="text-slate-700">{service.technicianName}</strong>
+            <strong className="text-slate-700">{service.technician.name}</strong>
           </span>
 
           <Link

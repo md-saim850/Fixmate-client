@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
-import DashboardShell from "@/components/dashboard/DashboardShell";
+import DashboardShell from "@/components/dashboard/customer/DashboardShell";
 import type { DashboardUser } from "@/types/dashboard";
 
 export default async function DashboardLayout({

@@ -8,7 +8,6 @@ import { ServiceInfo } from "@/components/services/ServiceInfo";
 import { BookingCard } from "@/components/services/BookingCard";
 import { TechnicianCard } from "@/components/services/TechnicianCard";
 import { ServiceFeatures } from "@/components/services/ServiceFeatures";
-import { ReviewSection } from "@/components/services/ReviewSection";
 
 import { Service } from "@/types/service";
 
@@ -58,7 +57,7 @@ export default async function ServiceDetailsPage({ params }: Props) {
           {/* Main content */}
           <div className="min-w-0 space-y-8">
             <ServiceGallery
-              image={service.image}
+              image={service.image[0]}
               title={service.title}
             />
 

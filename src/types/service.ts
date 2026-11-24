@@ -9,16 +9,15 @@ export type ServiceReview = {
 };
 
 export type Service = {
-  id: string;
+  _id: string;
   title: string;
   category: string;
   description: string;
-  image: string[];
+  image: string;
   basePrice: number;
-  rating: number;
-  totalReviews: number;
-  location: string;
-  duration: string;
+  serviceMode:string;
+
+  estimatedDuration: string;
   technician: {
     name: string;
     avatar: string;

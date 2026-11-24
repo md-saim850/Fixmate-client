@@ -75,9 +75,9 @@ export function Navbar() {
                   aria-label="Open profile menu"
                   aria-expanded={profileOpen}
                 >
-                  {user.image ? (
+                  {user.photoURL ? (
                     <img
-                      src={user.image}
+                      src={user.photoURL}
                       alt={user.name || "Profile"}
                       className="size-10 rounded-full border border-green-100 object-cover"
                     />
@@ -94,20 +94,21 @@ export function Navbar() {
 
                 {profileOpen && (
                   <div className="absolute right-0 top-14 w-52 rounded-xl border border-green-100 bg-white p-2 shadow-lg">
-                    
-                    {user?.role === 'customer' 
-                      ?                    
-                        <Link
-                          href="/dashboard/customer"
-                          onClick={() => setProfileOpen(false)}
-                          className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-green-50"
-                        >
-                          <LayoutDashboard size={17} />
-                          Dashboard
-                        </Link>
-                      :
-                      ""
-                  }
+                                       
+                    <Link
+                      href={`/dashboard/${
+                        user?.role === "customer"
+                          ? "customer"
+                          : user?.role === "technician"
+                            ? "technician"
+                            : "admin"
+                      }`}
+                      onClick={() => setProfileOpen(false)}
+                      className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-green-50"
+                    >
+                      <LayoutDashboard size={17} />
+                      Dashboard
+                    </Link>
 
                     <button
                       onClick={handleSignOut}

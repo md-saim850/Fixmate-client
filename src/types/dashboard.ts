@@ -51,3 +51,30 @@ export interface DashboardStat {
   description: string;
   icon: string;
 }
+
+export type ApprovalStatus = "pending" | "approved" | "rejected";
+
+export type ServiceMode = "home-visit" | "shop-drop-off" | "online";
+
+export interface TechnicianService {
+  _id: string;
+  title: string;
+  category: string;
+  description: string;
+  basePrice: number;
+  estimatedDuration: string;
+  serviceMode: ServiceMode;
+  serviceArea: string;
+  image: string;
+  technicianName: string;
+  technicianEmail: string;
+  approvalStatus: ApprovalStatus;
+  isAvailable: boolean;
+  createdAt?: string;
+}
+
+export interface TechnicianStats {
+  totalServices: number;
+  approvedServices: number;
+  pendingRequests: number;
+}

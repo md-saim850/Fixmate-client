@@ -1,5 +1,5 @@
 
-import BookingTable from "@/components/dashboard/BookingTable";
+import BookingTable from "@/components/dashboard/customer/BookingTable";
 import { CalendarDays } from "lucide-react";
 
 export default function CustomerBookingsPage() {

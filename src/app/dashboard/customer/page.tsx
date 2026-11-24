@@ -7,7 +7,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-import DashboardStats from "@/components/dashboard/DashboardStats";
+import DashboardStats from "@/components/dashboard/customer/DashboardStats";
 
 export default function CustomerDashboard() {
   // Replace with statistics from your bookings API.
