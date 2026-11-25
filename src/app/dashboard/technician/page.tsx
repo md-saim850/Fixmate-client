@@ -1,7 +1,3 @@
-
-"use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   BriefcaseBusiness,
@@ -11,44 +7,36 @@ import {
   ArrowRight,
   Wrench,
 } from "lucide-react";
-import { toast } from "sonner";
 
 import StatCard from "@/components/dashboard/customer/StatCard";
-import type { TechnicianStats } from "@/types/dashboard";
+import { getServerToken } from "@/lib/get-server-token";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-export default function TechnicianDashboard() {
-  const [stats, setStats] = useState<TechnicianStats>({
-    totalServices: 0,
-    approvedServices: 0,
-    pendingRequests: 0,
-  });
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchStats() {
-      try {
-        const res = await fetch(
-          `${API_URL}/services/technician/stats`,
-          { credentials: "include" }
-        );
-
-        if (!res.ok) throw new Error("Failed to fetch statistics");
-
-        const data = await res.json();
-        setStats(data);
-      } catch {
-        toast.error("Unable to load dashboard statistics");
-      } finally {
-        setLoading(false);
+const getStatus = async () => {
+  try {
+    const token = await getServerToken();
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/technician/status`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch technician status");
     }
 
-    fetchStats();
-  }, []);
+    const data = await response.json();;
+    return data;
 
+  } catch (error) {
+    console.error("Get technician status error:", error);
+  }
+};
+
+export default async function TechnicianDashboard() {
+
+  const status = await getStatus();
+  console.log(status);
   return (
     <div className="space-y-8">
       <section className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
@@ -75,39 +63,29 @@ export default function TechnicianDashboard() {
         </Link>
       </section>
 
-      {loading ? (
-        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-          {[1, 2, 3].map((item) => (
-            <div
-              key={item}
-              className="h-40 animate-pulse rounded-2xl bg-gray-100"
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-          <StatCard
-            title="Total Services"
-            value={stats.totalServices}
-            description="All services you have created"
-            icon={BriefcaseBusiness}
-          />
 
-          <StatCard
-            title="Approved Services"
-            value={stats.approvedServices}
-            description="Services visible to customers"
-            icon={CheckCircle2}
-          />
+      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        <StatCard
+          title="Total Services"
+          value={status.totalServices}
+          description="All services you have created"
+          icon={BriefcaseBusiness}
+        />
 
-          <StatCard
-            title="Pending Requests"
-            value={stats.pendingRequests}
-            description="Services waiting for admin approval"
-            icon={Clock}
-          />
-        </div>
-      )}
+        <StatCard
+          title="Approved Services"
+          value={status.approvalServices}
+          description="Services visible to customers"
+          icon={CheckCircle2}
+        />
+
+        <StatCard
+          title="Pending Requests"
+          value={status.pendingRequests}
+          description="Services waiting for admin approval"
+          icon={Clock}
+        />
+      </div>
 
       <section className="grid gap-5 lg:grid-cols-2">
         <div className="rounded-2xl bg-emerald-600 p-7 text-white">
@@ -154,6 +132,6 @@ export default function TechnicianDashboard() {
           </Link>
         </div>
       </section>
-    </div>
+    </div>  
   );
 }

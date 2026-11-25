@@ -1,25 +1,14 @@
-
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import {
-  Pencil,
-  Trash2,
-  Power,
-  Loader2,
-  BriefcaseBusiness,
-} from "lucide-react";
+import { Pencil, Trash2, Power, Loader2, BriefcaseBusiness,} from "lucide-react";
 import { toast } from "sonner";
-
-import type {
-  TechnicianService,
-  DashboardUser,
-} from "@/types/dashboard";
-
 import ApprovalBadge from "./ApprovalBadge";
 import DeleteServiceModal from "./DeleteServiceModal";
 import ServiceForm from "./ServiceForm";
+import type {TechnicianService, DashboardUser,} from "@/types/dashboard";
+import { getClientToken } from "@/lib/get-client-token";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -37,19 +26,26 @@ export default function MyServicesTable({ technician }: Props) {
 
   const fetchServices = useCallback(async () => {
     try {
-      const res = await fetch(
-        `${API_URL}/services/technician/my-services`,
-        { credentials: "include", cache: "no-store" }
-      );
+      const token = await getClientToken()
+      console.log(token);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/services/my-services`,{
+        cache: "no-store",
+        headers:{
+          Authorization: `Bearer ${token}`,
+        }
+      });
 
       if (!res.ok) throw new Error("Failed to fetch services");
 
       const data = await res.json();
       setServices(data.services ?? data);
+
     } catch {
       toast.error("Unable to load your services");
+
     } finally {
       setLoading(false);
+      
     }
   }, []);
 
@@ -85,47 +81,47 @@ export default function MyServicesTable({ technician }: Props) {
     } finally {
       setActionLoading(false);
     }
-  };
+  }; 
 
   // Toggle availability
   const toggleAvailability = async (service: TechnicianService) => {
-    const newValue = !service.isAvailable;
+  //   const newValue = !service.isAvailable;
 
-    setBusyId(service._id);
+  //   setBusyId(service._id);
 
-    try {
-      const res = await fetch(
-        `${API_URL}/services/${service._id}/availability`,
-        {
-          method: "PATCH",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ isAvailable: newValue }),
-        }
-      );
+  //   try {
+  //     const res = await fetch(
+  //       `${API_URL}/services/${service._id}/availability`,
+  //       {
+  //         method: "PATCH",
+  //         credentials: "include",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({ isAvailable: newValue }),
+  //       }
+  //     );
 
-      if (!res.ok) throw new Error("Update failed");
+  //     if (!res.ok) throw new Error("Update failed");
 
-      setServices((prev) =>
-        prev.map((item) =>
-          item._id === service._id
-            ? { ...item, isAvailable: newValue }
-            : item
-        )
-      );
+  //     setServices((prev) =>
+  //       prev.map((item) =>
+  //         item._id === service._id
+  //           ? { ...item, isAvailable: newValue }
+  //           : item
+  //       )
+  //     );
 
-      toast.success(
-        newValue
-          ? "Service is now available"
-          : "Service is now unavailable"
-      );
-    } catch {
-      toast.error("Unable to update availability");
-    } finally {
-      setBusyId(null);
-    }
+  //     toast.success(
+  //       newValue
+  //         ? "Service is now available"
+  //         : "Service is now unavailable"
+  //     );
+  //   } catch {
+  //     toast.error("Unable to update availability");
+  //   } finally {
+  //     setBusyId(null);
+  //   }
   };
 
   if (loading) {
@@ -173,7 +169,7 @@ export default function MyServicesTable({ technician }: Props) {
                     <td className="px-5 py-4">
                       <div className="flex min-w-48 items-center gap-3">
                         <Image
-                          src={service.image}
+                          src={service.image[0]}
                           alt={service.title}
                           width={48}
                           height={48}

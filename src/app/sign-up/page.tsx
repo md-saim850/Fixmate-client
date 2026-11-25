@@ -33,10 +33,10 @@ export default function SignUpPage() {
     const password = formData.get("password")?.toString() || "";
     const confirmPassword = formData.get("confirm_password")?.toString() || "";
 
-    let photoURL = "";
+    let avatar = "";
 
     if (profileImage) {
-      photoURL = await uploadImage(profileImage);
+      avatar = await uploadImage(profileImage);
     }
 
     if (password !== confirmPassword) {
@@ -54,7 +54,7 @@ export default function SignUpPage() {
     setBusy(true);
 
     try {
-      const { error } = await authClient.signUp.email({name, email, bio, phone, area, photoURL, role, password});
+      const { error } = await authClient.signUp.email({name, email, bio, phone, area, avatar, role, password});
 
       if (error) {
         throw new Error(error.message || "Could not create your account.");

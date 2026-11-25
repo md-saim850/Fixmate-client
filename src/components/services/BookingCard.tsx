@@ -160,7 +160,7 @@ const handleBooking = async () => {
         disabled={loading || !date || !problemDescription.trim() || !address.trim()}
         className="mt-6 flex h-12 w-full items-center justify-center rounded-xl bg-green-600 px-5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-green-700 hover:shadow-md active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {loading ? "Please wait..." : "Book this service"}
+        {loading ? "Please wait..." : "Request Repair"}
       </button>
 
       {/* Trust Indicators */}

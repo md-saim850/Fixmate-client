@@ -1,10 +1,5 @@
 
-import {
-  MapPin,
-  Clock,
-  Star,
-  ShieldCheck,
-} from "lucide-react";
+import {ShieldCheck,} from "lucide-react";
 import type { Service } from "@/types/service";
 
 export function ServiceInfo({ service }: { service: Service }) {
@@ -31,7 +26,7 @@ export function ServiceInfo({ service }: { service: Service }) {
         About this service
       </h2>
 
-      <p className="mt-3 text-sm leading-7 text-gray-600">
+      <p className="mt-3 text-sm leading-7 text-gray-600 rounded-2xl border border-gray-100 bg-white p-5">
         {service.description}
       </p>
     </div>

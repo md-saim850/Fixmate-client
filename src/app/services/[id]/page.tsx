@@ -7,7 +7,6 @@ import { ServiceGallery } from "@/components/services/ServiceGallery";
 import { ServiceInfo } from "@/components/services/ServiceInfo";
 import { BookingCard } from "@/components/services/BookingCard";
 import { TechnicianCard } from "@/components/services/TechnicianCard";
-import { ServiceFeatures } from "@/components/services/ServiceFeatures";
 
 import { Service } from "@/types/service";
 
@@ -63,9 +62,6 @@ export default async function ServiceDetailsPage({ params }: Props) {
 
             <ServiceInfo service={service} />
 
-            <div className="rounded-2xl border border-gray-100 bg-white p-6">
-              <ServiceFeatures service={service} />
-            </div>
           </div>
 
           {/* Sidebar */}

@@ -1,4 +1,5 @@
-import { ServiceCard, type Service } from "@/components/home/service-card";
+import { ServiceCard } from "@/components/home/service-card";
+import { Service } from "@/types/service";
 import { Search } from "lucide-react";
 
 type Props = {searchParams: Promise<{

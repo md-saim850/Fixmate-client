@@ -1,6 +1,11 @@
 
 import Image from "next/image";
-import { BadgeCheck, BriefcaseBusiness, Star } from "lucide-react";
+import {
+  BadgeCheck,
+  Mail,
+  Phone,
+  MapPin,
+} from "lucide-react";
 import type { Service } from "@/types/service";
 
 export function TechnicianCard({
@@ -14,37 +19,62 @@ export function TechnicianCard({
         Service provider
       </p>
 
+      {/* Profile */}
       <div className="flex items-center gap-3">
-        <div className="relative size-14 overflow-hidden rounded-full bg-green-50">
+        <div className="relative size-14 shrink-0 overflow-hidden rounded-full bg-green-50">
           <Image
-            src={technician.avatar}
-            alt={technician.name} 
+            src={technician.avatar || "/default-avatar.png"}
+            alt={technician.name || "Technician"}
             fill
             unoptimized
             className="object-cover"
           />
         </div>
 
-        <div>
+        <div className="min-w-0">
           <div className="flex items-center gap-1">
             <h3 className="font-bold text-gray-900">
               {technician.name}
             </h3>
-              <BadgeCheck size={17} className="text-green-600" />
+            <BadgeCheck size={17} className="shrink-0 text-green-600" />
           </div>
+          <p className="text-xs text-gray-500">Verified Service Provider</p>
         </div>
       </div>
 
-      <div className="mt-5 grid grid-cols-2 gap-3">
-        <div className="rounded-xl bg-gray-50 p-3">
-          <p className="text-xs text-gray-500">Completed jobs</p>
-          <p className="mt-1 flex items-center gap-1 text-sm font-bold">
-            <BriefcaseBusiness size={14} />
-            {/* {technician.totalJobs}+ */}
-          </p>
+      {/* Contact Information */}
+      <div className="my-5 space-y-3 border-y border-gray-100 py-4">
+        <div className="flex items-center gap-3 text-sm">
+          <Mail size={17} className="shrink-0 text-green-600" />
+          <span className="break-all text-gray-600">
+            {technician.email || "Email not provided"}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3 text-sm">
+          <Phone size={17} className="shrink-0 text-green-600" />
+          <span className="text-gray-600">
+            {technician.phone || "Phone not provided"}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3 text-sm">
+          <MapPin size={17} className="shrink-0 text-green-600" />
+          <span className="text-gray-600">
+            {technician.area || "Area not provided"}
+          </span>
         </div>
       </div>
 
+      {/* Bio */}
+      <div>
+        <h4 className="mb-2 text-sm font-bold text-gray-900">
+          About Provider
+        </h4>
+        <p className="text-sm leading-6 text-gray-600">
+          {technician.bio || "This service provider hasn't added a bio yet."}
+        </p>
+      </div>
     </div>
   );
 }

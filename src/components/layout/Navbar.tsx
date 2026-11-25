@@ -75,9 +75,9 @@ export function Navbar() {
                   aria-label="Open profile menu"
                   aria-expanded={profileOpen}
                 >
-                  {user.photoURL ? (
+                  {user.avatar ? (
                     <img
-                      src={user.photoURL}
+                      src={user.avatar}
                       alt={user.name || "Profile"}
                       className="size-10 rounded-full border border-green-100 object-cover"
                     />

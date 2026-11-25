@@ -3,7 +3,6 @@
 
 import { useState } from "react";
 import DashboardSidebar from "./DashboardSidebar";
-import DashboardHeader from "./DashboardHeader";
 import type { DashboardUser } from "@/types/dashboard";
 
 export default function DashboardShell({
@@ -24,11 +23,6 @@ export default function DashboardShell({
       />
 
       <div className="min-w-0 flex-1">
-        <DashboardHeader
-          user={user}
-          onMenuClick={() => setSidebarOpen(true)}
-        />
-
         <main className="mx-auto max-w-[1600px] p-4 sm:p-6 lg:p-8">
           {children}
         </main>

@@ -33,7 +33,7 @@ export const auth = betterAuth({
       phone: { type: "string", required: true, input: true },
       area: { type: "string", required: true, input: true },
       bio: { type: "string", required: false, input: true },
-      photoURL: { type: "string", required: false, input: true },
+      avatar: { type: "string", required: false, input: true },
 
     },
   },
