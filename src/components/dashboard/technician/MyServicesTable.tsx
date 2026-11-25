@@ -10,11 +10,12 @@ import ServiceForm from "./ServiceForm";
 import type {TechnicianService, DashboardUser,} from "@/types/dashboard";
 import { getClientToken } from "@/lib/get-client-token";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 interface Props {
   technician: Pick<DashboardUser, "name" | "email">;
 }
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 export default function MyServicesTable({ technician }: Props) {
   const [services, setServices] = useState<TechnicianService[]>([]);
@@ -26,9 +27,9 @@ export default function MyServicesTable({ technician }: Props) {
 
   const fetchServices = useCallback(async () => {
     try {
-      const token = await getClientToken()
-      console.log(token);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/services/my-services`,{
+      const token = await getClientToken();
+
+      const res = await fetch(`${API_URL}/services/my-services`,{
         cache: "no-store",
         headers:{
           Authorization: `Bearer ${token}`,
@@ -53,18 +54,20 @@ export default function MyServicesTable({ technician }: Props) {
     fetchServices();
   }, [fetchServices]);
 
-  // Delete service
   const deleteService = async () => {
     if (!deleteId) return;
 
     setActionLoading(true);
 
     try {
+      const token = await getClientToken();
       const res = await fetch(
         `${API_URL}/services/${deleteId}`,
         {
           method: "DELETE",
-          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -85,43 +88,44 @@ export default function MyServicesTable({ technician }: Props) {
 
   // Toggle availability
   const toggleAvailability = async (service: TechnicianService) => {
-  //   const newValue = !service.isAvailable;
+    const newValue = !service.isAvailable;
 
-  //   setBusyId(service._id);
+    setBusyId(service._id);
 
-  //   try {
-  //     const res = await fetch(
-  //       `${API_URL}/services/${service._id}/availability`,
-  //       {
-  //         method: "PATCH",
-  //         credentials: "include",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({ isAvailable: newValue }),
-  //       }
-  //     );
+    try {
+      const token = await getClientToken();
+      const res = await fetch(
+        `${API_URL}/services/${service._id}/availability`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ isAvailable: newValue }),
+        }
+      );
 
-  //     if (!res.ok) throw new Error("Update failed");
+      if (!res.ok) throw new Error("Update failed");
 
-  //     setServices((prev) =>
-  //       prev.map((item) =>
-  //         item._id === service._id
-  //           ? { ...item, isAvailable: newValue }
-  //           : item
-  //       )
-  //     );
+      setServices((prev) =>
+        prev.map((item) =>
+          item._id === service._id
+            ? { ...item, isAvailable: newValue }
+            : item
+        )
+      );
 
-  //     toast.success(
-  //       newValue
-  //         ? "Service is now available"
-  //         : "Service is now unavailable"
-  //     );
-  //   } catch {
-  //     toast.error("Unable to update availability");
-  //   } finally {
-  //     setBusyId(null);
-  //   }
+      toast.success(
+        newValue
+          ? "Service is now available"
+          : "Service is now unavailable"
+      );
+    } catch {
+      toast.error("Unable to update availability");
+    } finally {
+      setBusyId(null);
+    }
   };
 
   if (loading) {
@@ -171,8 +175,8 @@ export default function MyServicesTable({ technician }: Props) {
                         <Image
                           src={service.image[0]}
                           alt={service.title}
-                          width={48}
-                          height={48}
+                          width={50}
+                          height={50}
                           className="size-12 rounded-lg object-cover"
                         />
 
@@ -260,7 +264,7 @@ export default function MyServicesTable({ technician }: Props) {
               >
                 <div className="flex gap-3">
                   <Image
-                    src={service.image}
+                    src={service.image[0]}
                     alt={service.title}
                     width={72}
                     height={72}

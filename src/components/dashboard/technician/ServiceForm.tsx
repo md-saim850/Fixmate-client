@@ -12,6 +12,7 @@ import type {
   ServiceMode,
 } from "@/types/dashboard";
 import { getClientToken } from "@/lib/get-client-token";
+import { useRouter } from "next/navigation";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -35,14 +36,16 @@ interface Props {
 }
 
 export default function ServiceForm({ technician, service }: Props) {
-const [image, setImage] = useState<File | null>(null);
-const [preview, setPreview] = useState(service?.image ?? "");
-const [loading, setLoading] = useState(false);
-const [isAvailable, setIsAvailable] = useState(service?.isAvailable ?? true);
+  const [image, setImage] = useState<File | null>(null);
+  const [preview, setPreview] = useState(service?.image[0]);
+  const [loading, setLoading] = useState(false);
+  const [isAvailable, setIsAvailable] = useState(service?.isAvailable ?? true);
+
+  const router = useRouter();
 
   const inputClass ="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100";
   const labelClass = "mb-2 block text-sm font-semibold text-gray-700";
-
+  
   const handleImage = (file?: File) => {
     if (!file) return;
 
@@ -124,15 +127,19 @@ const [isAvailable, setIsAvailable] = useState(service?.isAvailable ?? true);
     setLoading(true);
 
     try {
-      let imageUrl = service?.image ?? "";
+
+      let images: string[] = service?.image ?? [];
 
       if (image) {
-        imageUrl = await uploadImage(image);
-        
-        
-        if (!imageUrl) {
+        const uploadedUrl = await uploadImage(image);
+        if (!uploadedUrl) {
           throw new Error("Image upload failed");
         }
+        images = [uploadedUrl];
+      }
+
+      if (images.length === 0) {
+        throw new Error("Please upload a service image");
       }
 
       const token = await getClientToken();
@@ -149,11 +156,14 @@ const [isAvailable, setIsAvailable] = useState(service?.isAvailable ?? true);
         estimatedDuration: estimatedDuration.trim(),
         serviceMode,
         serviceArea: serviceArea.trim(),
-        image: [imageUrl],
+        image: images,
         isAvailable,
       };
 
-      const url = service? `${API_URL}/services/${service._id}` : `${API_URL}/services`;
+
+      const url = service
+        ? `${API_URL}/services/${service._id}`
+        : `${API_URL}/services`;
 
       const response = await fetch(url, {
         method: service ? "PUT" : "POST",
@@ -169,18 +179,21 @@ const [isAvailable, setIsAvailable] = useState(service?.isAvailable ?? true);
       if (!response.ok) {
         throw new Error(data.message || "Unable to save service");
       }
-
-      toast.success(
-        service
-          ? "Service updated successfully!"
-          : "Service submitted! Waiting for admin approval."
-      );
-
+      
       if (!service) {
         setImage(null);
         setPreview("");
         setIsAvailable(true);
       }
+
+      window.location.reload();
+
+      toast.success(
+        service
+        ? "Service updated successfully!"
+        : "Service submitted! Waiting for admin approval."
+      );
+
     } catch (error) {
       console.error("Service submission error:", error);
 
@@ -192,7 +205,7 @@ const [isAvailable, setIsAvailable] = useState(service?.isAvailable ?? true);
     }
   };
 
-  return (
+  return (  
     <form onSubmit={handleSubmit} className="space-y-6">
 
       {/* Technician information */}
@@ -329,7 +342,7 @@ const [isAvailable, setIsAvailable] = useState(service?.isAvailable ?? true);
         <label className={labelClass}>Service Area *</label>
         <input
           name="serviceArea"
-          defaultValue={service?.serviceArea ?? ""}
+          defaultValue={service?.technician.area}
           placeholder="e.g. Dhaka, Uttara, Mirpur"
           className={inputClass}
           required

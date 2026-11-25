@@ -33,6 +33,11 @@ export default async function DashboardLayout({
     redirect("/");
   }
 
+  // Admins get their own shell in src/app/dashboard/admin/layout.tsx.
+  if (user.role === "admin") {
+    return <>{children}</>;
+  }
+
   return (
     <DashboardShell user={user}>
       {children}

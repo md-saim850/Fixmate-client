@@ -9,11 +9,11 @@ import {
 } from "lucide-react";
 
 import StatCard from "@/components/dashboard/customer/StatCard";
-import { getServerToken } from "@/lib/get-server-token";
+import { getToken } from "@/lib/getToken";
 
 const getStatus = async () => {
   try {
-    const token = await getServerToken();
+    const token = await getToken();
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/technician/status`,{
         headers: {
           Authorization: `Bearer ${token}`,
@@ -36,7 +36,7 @@ const getStatus = async () => {
 export default async function TechnicianDashboard() {
 
   const status = await getStatus();
-  console.log(status);
+
   return (
     <div className="space-y-8">
       <section className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">

@@ -21,15 +21,13 @@ export type PaymentStatus = "paid" | "unpaid";
 
 export interface Booking {
   _id: string;
-  service: {
-    title: string;
-    image: string;
-  };
+  serviceTitle: string;
+  serviceImage: string[];
   technician: {
     name: string;
     email?: string;
   };
-  preferredDate: string;
+  serviceDate:string; 
   basePrice: number;
   finalAmount: number;
   status: BookingStatus;
@@ -62,6 +60,11 @@ export interface TechnicianService {
   category: string;
   description: string;
   basePrice: number;
+  technician: {
+    id:string;
+    name:string
+    area:string
+  };
   estimatedDuration: string;
   serviceMode: ServiceMode;
   serviceArea: string;
@@ -73,7 +76,7 @@ export interface TechnicianService {
   createdAt?: string;
 }
 
-export interface TechnicianStats {
+export interface TechnicianStatus {
   totalServices: number;
   approvedServices: number;
   pendingRequests: number;

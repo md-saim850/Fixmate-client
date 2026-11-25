@@ -5,7 +5,6 @@ import {
   CreditCard,
   BriefcaseBusiness,
   Users,
-  Settings,
   PlusCircle,
 } from "lucide-react";
 
@@ -62,9 +61,19 @@ export const dashboardMenus = {
       icon: Users,
     },
     {
-      title: "Settings",
-      href: "/dashboard/admin/settings",
-      icon: Settings,
+      title: "Services",
+      href: "/dashboard/admin/services",
+      icon: BriefcaseBusiness,
+    },
+    {
+      title: "Bookings",
+      href: "/dashboard/admin/bookings",
+      icon: CalendarDays,
+    },
+    {
+      title: "Transactions",
+      href: "/dashboard/admin/transactions",
+      icon: CreditCard,
     },
   ],
 } satisfies Record<UserRole, {

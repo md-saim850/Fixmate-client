@@ -8,14 +8,34 @@ import {
 } from "lucide-react";
 
 import DashboardStats from "@/components/dashboard/customer/DashboardStats";
+import { getToken } from "@/lib/getToken";
 
-export default function CustomerDashboard() {
-  // Replace with statistics from your bookings API.
-  const stats = {
-    totalRequests: 12,
-    activeJobs: 3,
-    completedJobs: 8,
-  };
+const getUserStatus = async () => {
+  try {
+    const token = await getToken();
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/customer/status`,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch user status");
+    }
+
+    const data = await res.json();
+
+    return data;
+
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export default async function CustomerDashboard() {
+
+  const status = await getUserStatus();
 
   return (
     <div className="space-y-8">
@@ -34,9 +54,9 @@ export default function CustomerDashboard() {
       </section>
 
       <DashboardStats
-        totalRequests={stats.totalRequests}
-        activeJobs={stats.activeJobs}
-        completedJobs={stats.completedJobs}
+        totalRequests={status.totalRequests}
+        activeJobs={status.activeRequests}
+        completedJobs={status.completedRequests}
       />
 
       <section className="grid gap-5 lg:grid-cols-2">

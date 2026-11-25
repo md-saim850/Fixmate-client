@@ -13,12 +13,12 @@ interface Props {
   completedJobs: number;
 }
 
-export default function DashboardStats({
+export default function DashboardStatus({
   totalRequests,
   activeJobs,
   completedJobs,
 }: Props) {
-  const stats = [
+  const status = [
     {
       title: "Total Requests",
       value: totalRequests,
@@ -41,8 +41,8 @@ export default function DashboardStats({
 
   return (
     <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-      {stats.map((stat) => (
-        <StatCard key={stat.title} {...stat} />
+      {status.map((val) => (
+        <StatCard key={val.title} {...val} />
       ))}
     </div>
   );
