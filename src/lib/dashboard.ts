@@ -6,6 +6,7 @@ import {
   BriefcaseBusiness,
   Users,
   PlusCircle,
+  ClipboardList,
 } from "lucide-react";
 
 import type { UserRole } from "@/types/dashboard";
@@ -45,6 +46,11 @@ export const dashboardMenus = {
       title: "My Services",
       href: "/dashboard/technician/my-services",
       icon: BriefcaseBusiness,
+    },
+    {
+      title: "Manage Requests",
+      href: "/dashboard/technician/requests",
+      icon: ClipboardList,
     },
   ],
 
