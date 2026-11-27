@@ -8,6 +8,7 @@ import type { Booking } from "@/types/dashboard";
 import { PaymentStatusBadge } from "./BookingStatus";
 import { getClientToken } from "@/lib/get-client-token";
 import CancelBookingModal from "./CancelBookingModal";
+import Link from "next/link";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -22,49 +23,8 @@ export default function RenderActions({
 }: RenderActionsProps) {
   const [actionLoading, setActionLoading] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
+  const [loading, setLoading] = useState("");
 
-  // Payment
-  const payNow = async (bookingId: string) => {
-    try {
-      setActionLoading(true);
-
-      const token = await getClientToken();
-
-      const res = await fetch(
-        `${API_URL}/payments/create-checkout-session`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ bookingId }),
-        }
-      );
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Payment failed");
-      }
-
-      if (!data.url) {
-        throw new Error("Checkout URL missing");
-      }
-
-      window.location.href = data.url;
-    } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "Unable to start payment"
-      );
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  // Cancel booking
   const cancelBooking = async () => {
     if (!selected) return;
 
@@ -129,14 +89,13 @@ export default function RenderActions({
 
       {booking.status === "completed" &&
         booking.paymentStatus === "unpaid" && (
-          <button
-            disabled={actionLoading}
-            onClick={() => payNow(booking._id)}
-            className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-50"
+          <Link
+            href={`/checkout?bookingId=${booking._id}`}
+            className="inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-green-700"
           >
-            <CreditCard size={14} />
+            <CreditCard size={16} />
             Pay Now
-          </button>
+          </Link>
         )}
 
       {booking.status === "completed" &&

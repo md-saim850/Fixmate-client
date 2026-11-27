@@ -12,15 +12,17 @@
     "@better-auth/mongo-adapter": "^1.2.0",
     "@radix-ui/react-label": "^2.1.17",
     "@radix-ui/react-slot": "^1.5.0",
+    "@stripe/stripe-js": "^10.4.0",
     "better-auth": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.468.0",
     "mongodb": "^7.9.1",
-    "next": "^15.1.6",
+    "next": "^15.5.29",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sonner": "^1.7.4",
+    "stripe": "^23.2.0",
     "tailwind-merge": "^2.6.2"
   },
   "devDependencies": {

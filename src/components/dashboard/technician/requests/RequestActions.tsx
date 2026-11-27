@@ -77,20 +77,6 @@ export default function RequestActions({
     );
   }
 
-  if (booking.status === "completed" && booking.paymentStatus === "unpaid") {
-    return (
-      <button
-        disabled={loading}
-        onClick={onComplete}
-        className={`${buttonStyle} bg-red-600 text-white hover:bg-red-700`}
-      >
-        <CreditCard size={14} />
-        Pay Now
-      </button>
-    );
-  }
-
-  // Completed, rejected and cancelled have no actions
   return (
     <span className="text-xs text-gray-400">
       No action
