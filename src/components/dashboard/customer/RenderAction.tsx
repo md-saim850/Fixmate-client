@@ -23,7 +23,6 @@ export default function RenderActions({
 }: RenderActionsProps) {
   const [actionLoading, setActionLoading] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
-  const [loading, setLoading] = useState("");
 
   const cancelBooking = async () => {
     if (!selected) return;

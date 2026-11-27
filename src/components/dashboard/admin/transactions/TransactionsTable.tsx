@@ -13,9 +13,7 @@ interface TransactionResponse {
 }
 
 export default function TransactionsTable() {
-  const [transactions, setTransactions] = useState<
-    AdminTransaction[]
-  >([]);
+  const [transactions, setTransactions] = useState<AdminTransaction[]>([]);
 
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -97,7 +95,7 @@ export default function TransactionsTable() {
                 </td>
 
                 <td className="px-5 py-4 text-gray-500">
-                  {transaction.transactionId}
+                  {transaction.stripePaymentIntentId ?? transaction.transactionId}
                 </td>
 
                 <td className="px-5 py-4 text-gray-500">

@@ -40,7 +40,7 @@ export default function How_it_work() {
       </div>
 
       <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {steps.map((step, i) => (
+        {steps.map((step) => (
           <div
             key={step.n}
             className="rounded-2xl border border-slate-200 bg-white p-6"

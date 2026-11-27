@@ -21,19 +21,19 @@ export default function ServicesTable() {
     setLoading(true);
 
     try {
-      let data;
+      let data: { services: AdminService[] };
       if(filter === "all"){
-        data = await adminFetch<AdminService[]>(
+        data = await adminFetch<{ services: AdminService[] }>(
           `/admin/services`
         );
       }
       else{
-        data = await adminFetch<AdminService[]>(
+        data = await adminFetch<{ services: AdminService[] }>(
           `/admin/services?approvalStatus=${filter}`
         );
       }
 
-      setServices(data);
+      setServices(data.services);
     } catch {
       toast.error("Failed to load services");
     } finally {
@@ -73,7 +73,7 @@ export default function ServicesTable() {
 
   if(loading){
     return(
-      Loading()
+      <Loading />
     )
   }
   
@@ -110,7 +110,7 @@ export default function ServicesTable() {
           </thead>
 
           <tbody className="divide-y divide-gray-100">
-            {services.services.map((service) => (
+            {services.map((service) => (
               <tr key={service._id} className="hover:bg-gray-50">
                 <td className="px-5 py-4 font-medium text-gray-900">
                   {service.title}

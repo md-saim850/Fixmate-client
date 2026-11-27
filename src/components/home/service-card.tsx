@@ -2,7 +2,7 @@ import Link from "next/link";
 import { MapPin, Clock3, ArrowUpRight } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import Image from "next/image";
-import { Service } from "@/types/service";
+import type { Service } from "@/types/service";
 
 export function ServiceCard({ service }: { service: Service }) {
   return (

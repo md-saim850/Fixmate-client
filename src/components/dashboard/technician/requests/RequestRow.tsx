@@ -43,7 +43,7 @@ export default function RequestRow({
         </p>
         <p className="mt-1 flex items-center gap-1 text-xs text-gray-500">
           <Phone size={13} />
-          {booking.customer.phone}
+          {booking.customerPhone}
         </p>
       </td>
 

@@ -7,7 +7,6 @@ import { Loader2 } from "lucide-react";
 import { adminFetch } from "@/lib/admin-fetch.client";
 import type { AdminUser, UserRole } from "@/types/admin";
 import AdminStatusBadge from "../AdminStatusBadge";
-import { User, UsersResponse } from "@/types/dashboard";
 import Image from "next/image";
 
 interface Props {
@@ -15,15 +14,15 @@ interface Props {
 }
 
 export default function UsersTable({ currentUserId }: Props) {
-  const [users, setUsers] = useState<UsersResponse[]>([]);
+  const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
 
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const data = await adminFetch<UsersResponse[]>("/admin/users");
-        setUsers(data);
+        const data = await adminFetch<{ users: AdminUser[] }>("/admin/users");
+        setUsers(data.users);
       } catch {
         toast.error("Failed to load users");
       } finally {
@@ -51,14 +50,11 @@ export default function UsersTable({ currentUserId }: Props) {
         body: JSON.stringify({ role }),
       });
 
-      console.log(users);
-
-      setUsers((prev) => ({
-        ...prev,
-        users: prev.users.map((user) =>
+      setUsers((prev) =>
+        prev.map((user) =>
           user._id === userId ? { ...user, role } : user
-        ),
-      }));
+        )
+      );
 
       toast.success("User role updated successfully");
     } catch (error) {
@@ -88,17 +84,20 @@ export default function UsersTable({ currentUserId }: Props) {
         </thead>
 
         <tbody className="divide-y divide-gray-100">
-          {users.users.map((user:User) => {
+          {users.map((user) => {
             const isSelf = user._id === currentUserId;
+            const avatarUrl = user.avatar || user.image;
 
             return (
               <tr key={user._id} className="hover:bg-gray-50">
                 <td className="px-5 py-4">
                   <div className="flex items-center gap-3">
-                    {user.image ? (
+                    {avatarUrl ? (
                       <Image
-                        src={user.image}
-                        alt={user.name}
+                        width={50}
+                        height={50}
+                        src={avatarUrl}
+                        alt={user.name || "P"}
                         className="h-10 w-10 rounded-full object-cover"
                       />
                     ) : (

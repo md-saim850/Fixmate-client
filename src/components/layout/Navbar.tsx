@@ -1,6 +1,7 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
-import { Wrench, User, LogOut, LayoutDashboard } from "lucide-react";
-import { signOut} from "@/lib/auth-client";
+import { Wrench, User } from "lucide-react";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 
@@ -17,16 +18,6 @@ export async function Navbar() {
   });
 
   const user = session?.user;
-
-  const handleSignOut = async () => {
-    try{
-      await signOut();
-
-    }catch(error){
-      console.log(error);
-
-    }
-  };
 
   return (
     <header className="sticky top-0 z-40 border-b border-green-100 bg-white/90 backdrop-blur-xl">

@@ -6,10 +6,9 @@ import {
   X,
   Play,
   CheckCircle,
-  CreditCard,
 } from "lucide-react";
 
-import { Booking, BookingStatus } from "@/types/booking";
+import type { Booking, BookingStatus } from "@/types/booking";
 
 interface RequestActionsProps {
   booking: Booking;

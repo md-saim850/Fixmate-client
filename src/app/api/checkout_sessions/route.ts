@@ -1,19 +1,15 @@
+export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { stripe } from "@/lib/stripe";
 import { getToken } from "@/lib/getToken";
+import { getSession } from "@/lib/server";
 
 export async function POST(request: Request) {
 try {
-    console.log("=== DEBUG ===");
-    console.log("Method:", request.method);
-    console.log("Content-Type:", request.headers.get("content-type"));
-    console.log("Content-Length:", request.headers.get("content-length"));
-
-    // Read as text first (safer)
     const text = await request.text();
-    console.log("Raw body text:", text);          // ← this will show if body is empty
+    console.log("Raw body text:", text);
 
     if (!text) {
       return NextResponse.json(
@@ -65,7 +61,6 @@ try {
     const data = await response.json();
     const booking = data.booking;
 
-    console.log(booking);
 
     // Validate booking
     if (booking.status !== "completed") {
@@ -98,31 +93,33 @@ try {
       throw new Error("Origin header missing");
     }
 
+    const userSession = await getSession();
+
     // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      customer_email: userSession?.user.email,
+
       line_items: [
         {
           price_data: {
-            currency: "bdt",
+            currency: "BDT",
             product_data: {
-              name: "FixMate Service Booking",
-              description: `Booking ID: ${bookingId}`,
+              name: "FixMate Service Payment",
             },
-            unit_amount: Math.round(amount * 100),
+            unit_amount: amount * 100,
           },
           quantity: 1,
         },
       ],
 
-      mode: "payment",
-
       metadata: {
-        bookingId: bookingId,
+        bookingId: bookingId.toString(),
+        userId: userSession?.user.id as string,
       },
 
-      success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-
-      cancel_url: `${origin}/checkout?bookingId=${bookingId}&canceled=true`,
+      success_url: `${process.env.CLIENT_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.CLIENT_URL}/dashboard/customer/bookings`,
     });
 
     return NextResponse.json({

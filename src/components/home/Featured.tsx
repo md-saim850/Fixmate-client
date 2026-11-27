@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, ClipboardCheck } from "lucide-react";
-import { ServiceCard, type Service } from "@/components/home/service-card";
+import { ServiceCard } from "@/components/home/service-card";
+import type { Service } from "@/types/service";
 
 async function getFeatured(): Promise<Service[]> {
   try {

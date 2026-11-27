@@ -13,13 +13,17 @@ export type Service = {
   title: string;
   category: string;
   description: string;
-  image: string;
+  image: string[];
   basePrice: number;
   serviceMode:string;
 
   estimatedDuration: string;
   technician: {
     name: string;
+    email?: string;
+    phone?: string;
+    area?: string;
+    bio?: string;
     avatar: string;
     verified: boolean;
     rating: number;

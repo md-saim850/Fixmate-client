@@ -18,11 +18,11 @@ export default function BookingsTable() {
       setLoading(true);
 
       try {
-        const data = await adminFetch<AdminBooking[]>(
+        const data = await adminFetch<{ bookings: AdminBooking[] }>(
           `/admin/bookings?status=${filter}`
         );
 
-        setBookings(data);
+        setBookings(data.bookings);
       } catch {
         toast.error("Failed to load bookings");
       } finally {
@@ -38,8 +38,6 @@ export default function BookingsTable() {
       <Loading />
     )
   }
-
-  console.log(bookings);
 
   return (
     <div>
@@ -73,7 +71,7 @@ export default function BookingsTable() {
           </thead>
 
           <tbody className="divide-y divide-gray-100">
-            {bookings.bookings.map((booking) => (
+            {bookings.map((booking) => (
               <tr key={booking._id} className="hover:bg-gray-50">
                 <td className="px-5 py-4 font-medium text-gray-900">
                   {booking.service?.title || "Unknown"}

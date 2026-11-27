@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { CreditCard, Receipt } from "lucide-react";
 
 import type { Payment } from "@/types/dashboard";
+import { getClientToken } from "@/lib/get-client-token";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -16,16 +17,29 @@ export default function PaymentTable() {
   useEffect(() => {
     async function getPayments() {
       try {
-        const res = await fetch(
-          `${API_URL}/payments/customer`,
-          { credentials: "include" }
-        );
+        const token = await getClientToken();
 
-        if (!res.ok) throw new Error("Failed to load payments");
+        if (!token) {
+          throw new Error("Authentication token not found");
+        }
+
+        const res = await fetch(`${API_URL}/payments/customer`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!res.ok) {
+          throw new Error("Failed to load payments");
+        }
 
         const data = await res.json();
-        setPayments(data.payments ?? data);
-      } catch {
+
+        setPayments(data.payments ?? []);
+      } catch (error) {
+        console.error("Payment history error:", error);
         toast.error("Unable to load payment history");
       } finally {
         setLoading(false);
@@ -75,11 +89,11 @@ export default function PaymentTable() {
           {payments.map((payment) => (
             <tr key={payment._id} className="text-sm">
               <td className="px-5 py-5 font-semibold text-gray-900">
-                {payment.serviceTitle}
+                {payment.service?.title ?? payment.serviceTitle}
               </td>
 
               <td className="px-5 py-5 text-gray-600">
-                {payment.technicianName}
+                {payment.technician?.name ?? payment.technicianName}
               </td>
 
               <td className="px-5 py-5 font-bold text-gray-900">
@@ -88,12 +102,12 @@ export default function PaymentTable() {
 
               <td className="px-5 py-5">
                 <span className="font-mono text-xs text-gray-500">
-                  {payment.transactionId}
+                  {payment.stripePaymentIntentId ?? payment.transactionId}
                 </span>
               </td>
 
               <td className="px-5 py-5 text-gray-600">
-                {new Date(payment.paidAt).toLocaleDateString()}
+                {new Date(payment.updatedAt ?? payment.paidAt).toLocaleDateString()}
               </td>
 
               <td className="px-5 py-5">

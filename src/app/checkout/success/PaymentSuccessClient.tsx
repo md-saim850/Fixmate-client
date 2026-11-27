@@ -1,3 +1,4 @@
+'use client'
 
 import {
   CheckCircle2,
@@ -28,6 +29,7 @@ export default function PaymentSuccessClient({
 }: {
   sessionId: string;
 }) {
+
   const [payment, setPayment] = useState<PaymentDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -42,7 +44,7 @@ export default function PaymentSuccessClient({
 
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/payments/verify-session?sessionId=${encodeURIComponent(sessionId)}`
+          `${process.env.NEXT_PUBLIC_API_URL}/payments/verify-session?sessionId=${encodeURIComponent(sessionId)}`
         );
 
         const data = await response.json();
@@ -70,7 +72,7 @@ export default function PaymentSuccessClient({
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: currency.toUpperCase(),
-    }).format(amount / 100);
+    }).format(amount);
   };
 
   // Loading state

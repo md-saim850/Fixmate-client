@@ -15,7 +15,8 @@ export interface AdminUser {
   _id: string;
   name: string;
   email: string;
-  image?: string;
+  image?: string | null;
+  avatar?: string | null;
   role: UserRole;
   createdAt: string;
 }
@@ -65,6 +66,7 @@ export interface AdminTransaction {
   };
   amount: number;
   transactionId: string;
+  stripePaymentIntentId?: string;
   createdAt: string;
 }
 

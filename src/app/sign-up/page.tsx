@@ -13,7 +13,7 @@ type UserRole = "customer" | "technician";
 export default function SignUpPage() {
   const [busy, setBusy] = useState(false);
   const [role, setRole] = useState<UserRole>("customer");
-  const [profileImage, setProfileImage] = useState(null);
+  const [profileImage, setProfileImage] = useState<File | null>(null);
   const [preview, setPreview] = useState("");
 
   const router = useRouter();

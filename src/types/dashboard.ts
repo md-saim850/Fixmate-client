@@ -41,6 +41,14 @@ export interface Payment {
   amount: number;
   transactionId: string;
   paidAt: string;
+  service?: {
+    title: string;
+  };
+  technician?: {
+    name: string;
+  };
+  stripePaymentIntentId?: string;
+  updatedAt?: string;
 }
 
 export interface DashboardStat {
@@ -68,7 +76,7 @@ export interface TechnicianService {
   estimatedDuration: string;
   serviceMode: ServiceMode;
   serviceArea: string;
-  image: string;
+  image: string[];
   technicianName: string;
   technicianEmail: string;
   approvalStatus: ApprovalStatus;
@@ -80,18 +88,4 @@ export interface TechnicianStatus {
   totalServices: number;
   approvedServices: number;
   pendingRequests: number;
-}
-
-export interface User {
-  _id: string;
-  name?: string | null;
-  email: string;
-  image?: string | null;
-  role: UserRole;
-  createdAt: string | Date;
-}
-
-export interface UsersResponse {
-  _id:string;
-  users: User[];
 }

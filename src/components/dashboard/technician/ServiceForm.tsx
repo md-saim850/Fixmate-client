@@ -12,7 +12,6 @@ import type {
   ServiceMode,
 } from "@/types/dashboard";
 import { getClientToken } from "@/lib/get-client-token";
-import { useRouter } from "next/navigation";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -33,15 +32,20 @@ interface Props {
     email: string;
   };
   service?: TechnicianService;
+  onCancel?: () => void;
+  onSuccess?: () => void;
 }
 
-export default function ServiceForm({ technician, service }: Props) {
+export default function ServiceForm({
+  technician,
+  service,
+  onCancel,
+  onSuccess,
+}: Props) {
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState(service?.image[0]);
   const [loading, setLoading] = useState(false);
   const [isAvailable, setIsAvailable] = useState(service?.isAvailable ?? true);
-
-  const router = useRouter();
 
   const inputClass ="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100";
   const labelClass = "mb-2 block text-sm font-semibold text-gray-700";
@@ -69,7 +73,7 @@ export default function ServiceForm({ technician, service }: Props) {
     }
 
     setImage(null);
-    setPreview(service?.image ?? "");
+    setPreview(service?.image[0] ?? "");
   };
 
   const handleSubmit = async (
@@ -186,13 +190,17 @@ export default function ServiceForm({ technician, service }: Props) {
         setIsAvailable(true);
       }
 
-      window.location.reload();
-
       toast.success(
         service
         ? "Service updated successfully!"
         : "Service submitted! Waiting for admin approval."
       );
+
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        window.location.reload();
+      }
 
     } catch (error) {
       console.error("Service submission error:", error);
@@ -431,6 +439,17 @@ export default function ServiceForm({ technician, service }: Props) {
 
       {/* Submit */}
       <div className="flex flex-col-reverse gap-3 border-t border-gray-100 pt-5 sm:flex-row sm:justify-end">
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={loading}
+            className="inline-flex items-center justify-center rounded-xl border border-gray-200 px-6 py-3 text-sm font-semibold text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Cancel
+          </button>
+        )}
+
         <button
           type="submit"
           disabled={loading}

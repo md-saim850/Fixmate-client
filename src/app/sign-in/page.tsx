@@ -17,7 +17,7 @@ export default function SignInPage() {
     setBusy(true);
 
     try {
-      const {data, error} = await signIn.email({email, password});
+      const { error } = await signIn.email({email, password});
 
       if (error) throw new Error("Email or password is incorrect");
 

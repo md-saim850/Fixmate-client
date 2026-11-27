@@ -2,14 +2,12 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { CalendarDays, ShieldCheck, Wallet, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import type { Service } from "@/types/service";
 import { getClientToken } from "@/lib/get-client-token";
 
 export function BookingCard({ service }: { service: Service }) {
-  const router = useRouter();
   const [date, setDate] = useState("");
   const [loading, setLoading] = useState(false);
   const [problemDescription, setProblemDescription] = useState("");
