@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import Loading from "@/app/dashboard/loading";
 
-import { adminFetch } from "@/lib/admin-api";
+import { adminFetch } from "@/lib/admin-fetch.client";
 import type { AdminBooking } from "@/types/admin";
 import AdminStatusBadge from "../AdminStatusBadge";
 
@@ -32,6 +33,14 @@ export default function BookingsTable() {
     getBookings();
   }, [filter]);
 
+  if(loading){
+    return(
+      <Loading />
+    )
+  }
+
+  console.log(bookings);
+
   return (
     <div>
       <div className="mb-5 flex justify-end">
@@ -41,7 +50,7 @@ export default function BookingsTable() {
           className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm"
         >
           <option value="all">All Bookings</option>
-          <option value="pending">Pending</option>
+          <option value="requested">Requested</option>
           <option value="accepted">Accepted</option>
           <option value="in-progress">In Progress</option>
           <option value="completed">Completed</option>
@@ -64,7 +73,7 @@ export default function BookingsTable() {
           </thead>
 
           <tbody className="divide-y divide-gray-100">
-            {bookings.map((booking) => (
+            {bookings.bookings.map((booking) => (
               <tr key={booking._id} className="hover:bg-gray-50">
                 <td className="px-5 py-4 font-medium text-gray-900">
                   {booking.service?.title || "Unknown"}

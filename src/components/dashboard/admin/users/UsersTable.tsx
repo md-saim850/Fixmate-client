@@ -4,23 +4,25 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
-import { adminFetch } from "@/lib/admin-api";
+import { adminFetch } from "@/lib/admin-fetch.client";
 import type { AdminUser, UserRole } from "@/types/admin";
 import AdminStatusBadge from "../AdminStatusBadge";
+import { User, UsersResponse } from "@/types/dashboard";
+import Image from "next/image";
 
 interface Props {
   currentUserId: string;
 }
 
 export default function UsersTable({ currentUserId }: Props) {
-  const [users, setUsers] = useState<AdminUser[]>([]);
+  const [users, setUsers] = useState<UsersResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
 
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const data = await adminFetch<AdminUser[]>("/admin/users");
+        const data = await adminFetch<UsersResponse[]>("/admin/users");
         setUsers(data);
       } catch {
         toast.error("Failed to load users");
@@ -49,11 +51,14 @@ export default function UsersTable({ currentUserId }: Props) {
         body: JSON.stringify({ role }),
       });
 
-      setUsers((prev) =>
-        prev.map((user) =>
+      console.log(users);
+
+      setUsers((prev) => ({
+        ...prev,
+        users: prev.users.map((user) =>
           user._id === userId ? { ...user, role } : user
-        )
-      );
+        ),
+      }));
 
       toast.success("User role updated successfully");
     } catch (error) {
@@ -83,7 +88,7 @@ export default function UsersTable({ currentUserId }: Props) {
         </thead>
 
         <tbody className="divide-y divide-gray-100">
-          {users.map((user) => {
+          {users.users.map((user:User) => {
             const isSelf = user._id === currentUserId;
 
             return (
@@ -91,7 +96,7 @@ export default function UsersTable({ currentUserId }: Props) {
                 <td className="px-5 py-4">
                   <div className="flex items-center gap-3">
                     {user.image ? (
-                      <img
+                      <Image
                         src={user.image}
                         alt={user.name}
                         className="h-10 w-10 rounded-full object-cover"

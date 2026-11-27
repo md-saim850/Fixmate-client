@@ -1,15 +1,23 @@
-
 export const uploadImage = async (imageFile) => {
   if (!imageFile) {
     throw new Error("Please select an image");
   }
 
-  const formData = new FormData();
+  if (imageFile.size > 1024 * 1024) {
+    throw new Error("Image size must be less than 1MB");
+  }
 
+  const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("ImgBB API key is missing");
+  }
+
+  const formData = new FormData();
   formData.append("image", imageFile);
 
   const response = await fetch(
-    `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`,
+    `https://api.imgbb.com/1/upload?key=${apiKey}`,
     {
       method: "POST",
       body: formData,
@@ -24,5 +32,5 @@ export const uploadImage = async (imageFile) => {
     );
   }
 
-  return result.data.url;
+  return result.data.display_url;
 };

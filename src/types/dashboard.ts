@@ -81,3 +81,17 @@ export interface TechnicianStatus {
   approvedServices: number;
   pendingRequests: number;
 }
+
+export interface User {
+  _id: string;
+  name?: string | null;
+  email: string;
+  image?: string | null;
+  role: UserRole;
+  createdAt: string | Date;
+}
+
+export interface UsersResponse {
+  _id:string;
+  users: User[];
+}

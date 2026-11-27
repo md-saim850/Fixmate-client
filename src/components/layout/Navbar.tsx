@@ -1,9 +1,8 @@
-"use client";
-
 import Link from "next/link";
-import { useState } from "react";
-import { Menu, Wrench, X, User, LogOut, LayoutDashboard } from "lucide-react";
-import { useSession, signOut} from "@/lib/auth-client";
+import { Wrench, User, LogOut, LayoutDashboard } from "lucide-react";
+import { signOut} from "@/lib/auth-client";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 
 const links = [
   { href: "/", label: "Home" },
@@ -11,28 +10,21 @@ const links = [
   { href: "/about", label: "How it works" },
 ];
 
-export function Navbar() {
-  const [open, setOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+export async function Navbar() {
 
-  const { data: session, isPending } = useSession();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   const user = session?.user;
 
   const handleSignOut = async () => {
-    setLoading(true);
     try{
       await signOut();
-      setProfileOpen(false);
-      setOpen(false);
 
     }catch(error){
       console.log(error);
 
-    }finally{
-      setLoading(false)
-      
     }
   };
 
@@ -66,15 +58,8 @@ export function Navbar() {
 
         {/* Desktop Auth Section */}
         <div className="hidden items-center gap-3 md:flex">
-          {!isPending && (
-            user ? (
-              <div className="relative">
-                <button
-                  onClick={() => setProfileOpen(!profileOpen)}
-                  className="flex items-center gap-2 rounded-xl p-1.5 transition hover:bg-green-50"
-                  aria-label="Open profile menu"
-                  aria-expanded={profileOpen}
-                >
+            {user ? (
+              <Link href={`/dashboard/${user.role}`} className="relative">
                   {user.avatar ? (
                     <img
                       src={user.avatar}
@@ -90,36 +75,7 @@ export function Navbar() {
                   <span className="max-w-28 truncate text-sm font-semibold text-slate-700">
                     {user.name || "My Account"}
                   </span>
-                </button>
-
-                {profileOpen && (
-                  <div className="absolute right-0 top-14 w-52 rounded-xl border border-green-100 bg-white p-2 shadow-lg">
-                                       
-                    <Link
-                      href={`/dashboard/${
-                        user?.role === "customer"
-                          ? "customer"
-                          : user?.role === "technician"
-                            ? "technician"
-                            : "admin"
-                      }`}
-                      onClick={() => setProfileOpen(false)}
-                      className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-green-50"
-                    >
-                      <LayoutDashboard size={17} />
-                      Dashboard
-                    </Link>
-
-                    <button
-                      onClick={handleSignOut}
-                      className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50"
-                    >
-                      <LogOut size={17} />
-                      Sign out
-                    </button>
-                  </div>
-                )}
-              </div>
+              </Link>
             ) : (
               <>
                 <Link
@@ -136,28 +92,14 @@ export function Navbar() {
                   Get started
                 </Link>
               </>
-            )
-          )}
+            )} 
         </div>
-
-        {/* Mobile Toggle */}
-        <button
-          aria-label="Toggle navigation"
-          aria-expanded={open}
-          onClick={() => setOpen(!open)}
-          className="rounded-lg p-2 text-slate-700 md:hidden"
-        >
-          {open ? <X /> : <Menu />}
-        </button>
       </div>
 
       {/* Mobile Navigation */}
-      {open && (
         <nav className="container-shell grid gap-1 border-t border-green-100 py-4 md:hidden">
-
           {links.map((link) => (
             <Link
-              onClick={() => setOpen(false)}
               key={link.href}
               href={link.href}
               className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-green-50"
@@ -166,10 +108,9 @@ export function Navbar() {
             </Link>
           ))}
 
-          {!isPending && (
-            user ? (
+            {user ? (
               <>
-                <div className="my-2 flex items-center gap-3 border-t border-green-100 pt-4">
+                <Link href={"/dashboard"} className="my-2 flex items-center gap-3 border-t border-green-100 pt-4">
                   {user.image ? (
                     <img
                       src={user.image}
@@ -190,30 +131,12 @@ export function Navbar() {
                       {user.email}
                     </p>
                   </div>
-                </div>
-
-                <Link
-                  href="/dashboard"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold text-green-700 hover:bg-green-50"
-                >
-                  <LayoutDashboard size={17} />
-                  Dashboard
                 </Link>
-
-                <button
-                  onClick={handleSignOut}
-                  className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-semibold text-red-600 hover:bg-red-50"
-                >
-                  <LogOut size={17} />
-                  Sign out
-                </button>
               </>
             ) : (
               <>
                 <Link
                   href="/sign-in"
-                  onClick={() => setOpen(false)}
                   className="px-3 py-2.5 text-sm font-semibold text-green-700"
                 >
                   Sign in
@@ -221,16 +144,13 @@ export function Navbar() {
 
                 <Link
                   href="/sign-up"
-                  onClick={() => setOpen(false)}
                   className="px-3 py-2.5 text-sm font-semibold text-green-700"
                 >
                   Get started
                 </Link>
               </>
-            )
-          )}
+            )}
         </nav>
-      )}
     </header>
   );
 }

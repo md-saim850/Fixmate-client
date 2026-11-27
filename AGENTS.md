@@ -5,7 +5,7 @@ Next.js 15 App Router client for the FixMate repair marketplace. TypeScript (str
 ## Commands
 
 - Install: `npm install`; dev: `npm run dev` → http://localhost:3000; build: `npm run build`.
-- Typecheck: `npx tsc --noEmit`. The baseline is **not clean** (auth custom fields, `Service.image`, empty `dashboard/page.tsx`), so don't chase unrelated errors.
+- Typecheck: `npx tsc --noEmit`. The baseline is **not clean** (auth custom fields, `Service.image`, empty `dashboard/bookings/page.tsx`), so don't chase unrelated errors.
 - No test suite or test script exists.
 - `npm run lint` is `next lint`, but no ESLint config is checked in, so it prompts to scaffold one. Don't treat it as a working gate without setting that up.
 
@@ -38,7 +38,8 @@ Next.js 15 App Router client for the FixMate repair marketplace. TypeScript (str
 
 - App Router lives in `src/app`; alias `@/*` maps to `src/*`.
 - `/dashboard/{customer,technician,admin}` are role areas. `src/app/dashboard/layout.tsx` enforces login and a valid role; admins bypass `DashboardShell` and get their own sidebar/layout in `src/app/dashboard/admin/layout.tsx`. There is no middleware.
-- `src/app/dashboard/page.tsx` is a zero-byte placeholder; don't delete it as an unused file.
+- `src/app/dashboard/bookings/page.tsx` is a zero-byte placeholder; don't delete it as an unused file.
+- Profile settings is the shared client page at `src/app/dashboard/profile/page.tsx`; the admin route re-exports it so the admin shell stays visible.
 - Use the custom `.container-shell` and `.section-space` utilities from `src/app/globals.css`; pages depend on them instead of ad-hoc max-width wrappers.
 - shadcn/ui is configured (new-york style, `@/components/ui`, `cn()` in `src/lib/utils.ts`), but `src/components/ui` does not exist yet; add components with the shadcn CLI.
 - Tailwind defines a `brand-*` palette and `shadow-soft`, though existing pages mostly use the green/emerald scales.

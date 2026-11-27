@@ -1,10 +1,14 @@
 
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Home, Wrench, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Home, LogOut, Settings, Wrench, X } from "lucide-react";
+import { toast } from "sonner";
+
 import { dashboardMenus } from "@/lib/dashboard";
+import { signOut } from "@/lib/auth-client";
 import type { DashboardUser } from "@/types/dashboard";
 
 interface Props {
@@ -19,7 +23,25 @@ export default function DashboardSidebar({
   onClose,
 }: Props) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [loggingOut, setLoggingOut] = useState(false);
   const menus = dashboardMenus[user.role] ?? [];
+  const profileActive = pathname === "/dashboard/profile";
+
+  const handleSignOut = async () => {
+    setLoggingOut(true);
+
+    try {
+      await signOut();
+      onClose();
+      router.push("/sign-in");
+      router.refresh();
+    } catch {
+      toast.error("Unable to log out. Please try again.");
+    } finally {
+      setLoggingOut(false);
+    }
+  };
 
   return (
     <>
@@ -82,9 +104,33 @@ export default function DashboardSidebar({
           </nav>
         </div>
 
-        <div className="mt-auto border-t border-gray-100 p-5">
+        <div className="mt-auto space-y-2 border-t border-gray-100 p-5">
+          <Link
+            href="/dashboard/profile"
+            onClick={onClose}
+            className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition ${
+              profileActive
+                ? "bg-emerald-50 text-emerald-700"
+                : "text-gray-600 hover:bg-gray-50 hover:text-emerald-700"
+            }`}
+          >
+            <Settings size={19} /> 
+            Profile Settings
+          </Link>
+
+          <button
+            type="button"
+            onClick={handleSignOut}
+            disabled={loggingOut}
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <LogOut size={19} />
+            {loggingOut ? "Logging out..." : "Logout"}
+          </button>
+
           <Link
             href="/"
+            onClick={onClose}
             className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50"
           >
             <Home size={19} />

@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Users,
@@ -10,7 +11,12 @@ import {
   CreditCard,
   ShieldCheck,
   Home,
+  LogOut,
+  Settings,
 } from "lucide-react";
+import { toast } from "sonner";
+
+import { signOut } from "@/lib/auth-client";
 
 const navigation = [
   {
@@ -42,6 +48,23 @@ const navigation = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [loggingOut, setLoggingOut] = useState(false);
+  const profileActive = pathname.startsWith("/dashboard/admin/profile");
+
+  const handleSignOut = async () => {
+    setLoggingOut(true);
+
+    try {
+      await signOut();
+      router.push("/sign-in");
+      router.refresh();
+    } catch {
+      toast.error("Unable to log out. Please try again.");
+    } finally {
+      setLoggingOut(false);
+    }
+  };
 
   return (
     <aside className="flex h-full w-full flex-col border-r border-gray-200 bg-white p-5">
@@ -93,13 +116,37 @@ export default function AdminSidebar() {
         })}
       </nav>
 
-      <Link
-        href="/"
-        className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-gray-600 hover:bg-gray-50"
-      >
-        <Home size={19} />
-        Back to Website
-      </Link>
+      <div className="mt-6 space-y-2 border-t border-gray-200 pt-5">
+        <Link
+          href="/dashboard/admin/profile"
+          className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition ${
+            profileActive
+              ? "bg-green-50 text-green-700"
+              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+          }`}
+        >
+          <Settings size={19} />
+          Profile Settings
+        </Link>
+
+        <button
+          type="button"
+          onClick={handleSignOut}
+          disabled={loggingOut}
+          className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <LogOut size={19} />
+          {loggingOut ? "Logging out..." : "Logout"}
+        </button>
+
+        <Link
+          href="/"
+          className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-gray-600 hover:bg-gray-50"
+        >
+          <Home size={19} />
+          Back to Website
+        </Link>
+      </div>
     </aside>
   );
 }

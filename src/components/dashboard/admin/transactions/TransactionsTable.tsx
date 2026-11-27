@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Wallet } from "lucide-react";
 
-import { adminFetch } from "@/lib/admin-api";
+import { adminFetch } from "@/lib/admin-fetch.client";
 import type { AdminTransaction } from "@/types/admin";
 
 interface TransactionResponse {

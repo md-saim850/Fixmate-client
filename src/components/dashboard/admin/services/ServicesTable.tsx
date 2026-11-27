@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import { adminFetch } from "@/lib/admin-api";
+import { adminFetch } from "@/lib/admin-fetch.client";
 import type {
   AdminService,
   ApprovalStatus,
 } from "@/types/admin";
 import AdminStatusBadge from "../AdminStatusBadge";
+import Loading from "@/app/dashboard/loading"
 
 export default function ServicesTable() {
   const [services, setServices] = useState<AdminService[]>([]);
@@ -20,9 +21,17 @@ export default function ServicesTable() {
     setLoading(true);
 
     try {
-      const data = await adminFetch<AdminService[]>(
-        `/admin/services?approvalStatus=${filter}`
-      );
+      let data;
+      if(filter === "all"){
+        data = await adminFetch<AdminService[]>(
+          `/admin/services`
+        );
+      }
+      else{
+        data = await adminFetch<AdminService[]>(
+          `/admin/services?approvalStatus=${filter}`
+        );
+      }
 
       setServices(data);
     } catch {
@@ -62,6 +71,12 @@ export default function ServicesTable() {
     }
   };
 
+  if(loading){
+    return(
+      Loading()
+    )
+  }
+  
   return (
     <div>
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -95,7 +110,7 @@ export default function ServicesTable() {
           </thead>
 
           <tbody className="divide-y divide-gray-100">
-            {services.map((service) => (
+            {services.services.map((service) => (
               <tr key={service._id} className="hover:bg-gray-50">
                 <td className="px-5 py-4 font-medium text-gray-900">
                   {service.title}
@@ -118,33 +133,27 @@ export default function ServicesTable() {
                 </td>
 
                 <td className="px-5 py-4">
-                  {service.approvalStatus === "pending" ? (
-                    <div className="flex gap-2">
-                      <button
-                        disabled={actionLoading === service._id}
-                        onClick={() =>
-                          updateApproval(service._id, "approved")
-                        }
-                        className="rounded-lg bg-green-600 px-3 py-2 text-xs font-medium text-white hover:bg-green-700 disabled:opacity-50"
-                      >
-                        Approve
-                      </button>
+                  <div className="flex gap-2">
+                    <button
+                      disabled={actionLoading === service._id}
+                      onClick={() =>
+                        updateApproval(service._id, "approved")
+                      }
+                      className="rounded-lg bg-green-600 px-3 py-2 text-xs font-medium text-white hover:bg-green-700 disabled:opacity-50"
+                    >
+                      Approve
+                    </button>
 
-                      <button
-                        disabled={actionLoading === service._id}
-                        onClick={() =>
-                          updateApproval(service._id, "rejected")
-                        }
-                        className="rounded-lg bg-red-50 px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-100 disabled:opacity-50"
-                      >
-                        Reject
-                      </button>
-                    </div>
-                  ) : (
-                    <span className="text-xs text-gray-400">
-                      No actions
-                    </span>
-                  )}
+                    <button
+                      disabled={actionLoading === service._id}
+                      onClick={() =>
+                        updateApproval(service._id, "rejected")
+                      }
+                      className="rounded-lg bg-red-50 px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-100 disabled:opacity-50"
+                    >
+                      Reject
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

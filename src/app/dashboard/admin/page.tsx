@@ -6,7 +6,7 @@ import {
 
 import AdminHeader from "@/components/dashboard/admin/AdminHeader";
 import AdminStatCard from "@/components/dashboard/admin/AdminStatCard";
-import { adminFetch } from "@/lib/admin-api";
+import { adminFetch } from "@/lib/admin-fetch.server";
 
 import type { AdminStatus } from "@/types/admin";
 const getStatus = async () => {

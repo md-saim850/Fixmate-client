@@ -5,7 +5,7 @@ export const getToken = async () => {
   const { token } = await auth.api.getToken({
     headers: await headers(),
   });
-
+  
   if (!token) {
     throw new Error("Unauthorized");
   }
